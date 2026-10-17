@@ -11,6 +11,10 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -42,15 +46,36 @@ fun LemonadeApp() {
 
 @Composable
 fun LemonTextAndImage(modifier: Modifier = Modifier) {
+    // l'étape en cours (1 = citronnier, 2 = citron)
+    var currentStep by remember { mutableStateOf(1) }
+
+    // image affichée selon l'étape
+    val imageResource = when (currentStep) {
+        1 -> R.drawable.lemon_tree
+        else -> R.drawable.lemon_squeeze
+    }
+
+    // libellé affiché selon l'étape
+    val textResource = when (currentStep) {
+        1 -> R.string.select_lemon
+        else -> R.string.squeeze_lemon
+    }
+
+    // description de l'image selon l'étape
+    val descriptionResource = when (currentStep) {
+        1 -> R.string.lemon_tree_description
+        else -> R.string.lemon_description
+    }
+
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = stringResource(R.string.select_lemon))
-        Button(onClick = { /*TODO*/ }) {
+        Text(text = stringResource(textResource))
+        Button(onClick = { currentStep = 2 }) {
             Image(
-                painter = painterResource(R.drawable.lemon_tree),
-                contentDescription = stringResource(R.string.lemon_tree_description)
+                painter = painterResource(imageResource),
+                contentDescription = stringResource(descriptionResource)
             )
         }
     }
