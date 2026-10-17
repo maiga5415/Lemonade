@@ -5,17 +5,22 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,14 +49,33 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun LemonadeApp() {
-    LemonTextAndImage(
-        modifier = Modifier
-            .fillMaxSize()
-            .wrapContentSize(Alignment.Center)
-    )
+    Scaffold(
+        // barre jaune en haut avec le titre en gras, centré
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(R.string.app_name),
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color(0xFFF9E44C)
+                )
+            )
+        }
+    ) { innerPadding ->
+        LemonTextAndImage(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .wrapContentSize(Alignment.Center)
+        )
+    }
 }
 
 @Composable
@@ -89,13 +114,7 @@ fun LemonTextAndImage(modifier: Modifier = Modifier) {
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // libellé avec une police plus grande que celle par défaut
-        Text(
-            text = stringResource(textResource),
-            fontSize = 18.sp
-        )
-        // espace de 16dp entre le libellé et l'image
-        Spacer(modifier = Modifier.height(16.dp))
+        // l'image est un bouton carré aux angles arrondis, avec une couleur d'accentuation
         Button(
             onClick = {
                 when (currentStep) {
@@ -115,22 +134,23 @@ fun LemonTextAndImage(modifier: Modifier = Modifier) {
                     else -> currentStep = 1
                 }
             },
-            // bouton avec angles arrondis et une couleur d'accentuation
+            modifier = Modifier.size(200.dp),
             shape = RoundedCornerShape(40.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFC3ECD2))
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFC3ECD2)),
+            contentPadding = PaddingValues(24.dp)
         ) {
             Image(
                 painter = painterResource(imageResource),
                 contentDescription = stringResource(descriptionResource),
-                // bordure autour de l'image
-                modifier = Modifier
-                    .border(
-                        width = 2.dp,
-                        color = Color(0xFF69CDD9),
-                        shape = RoundedCornerShape(4.dp)
-                    )
-                    .padding(16.dp)
+                modifier = Modifier.fillMaxSize()
             )
         }
+        // espace de 16dp entre l'image et le libellé
+        Spacer(modifier = Modifier.height(16.dp))
+        // libellé avec une police plus grande que celle par défaut
+        Text(
+            text = stringResource(textResource),
+            fontSize = 18.sp
+        )
     }
 }
